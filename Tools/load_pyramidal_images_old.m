@@ -1,4 +1,4 @@
-function [ pyramidal_images1,pyramidal_images2,pyramidal_level,uvGT ] = load_pyramidal_images( path_img1,path_img2,path_gt,pyramidal_level)
+function [ pyramidal_images1,pyramidal_images2,pyramidal_level,uvGT ] = load_pyramidal_images_old( path_img1,path_img2,path_gt,pyramidal_level)
 %Load and create pyramidal images from path
 %GT is intepreted by Middleburry database
 

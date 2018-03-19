@@ -10,7 +10,7 @@ add2='C:\Users\khoa\Dropbox\Database\optical flow\';
 add3='C:\Users\khoa\Dropbox\Database\eval-data\';
 add_movie='C:\Users\MAI\Dropbox\Database\optical flow\Dumptruck\';
 addKITTI='C:\Users\MAI\Documents\KITI Flow\training\image_2\';
-add='C:\Users\MAI\Dropbox\Database\other-data\GT\';
+%add='C:\Users\MAI\Dropbox\Database\other-data\GT\';
 add='D:\Dropbox\Database\other-data\GT\';
 subPath = {'Venus', 'Dimetrodon',   'Hydrangea',    'RubberWhale',...
     'Grove2', 'Grove3', 'Urban2', 'Urban3'};
@@ -22,14 +22,14 @@ gt=1; % Load ground truth
 for seq=1:1
     %% Loading images, groundtruth and convert to double
     %subPath{seq}
-%     str_idx1 = sprintf('%02d',seq);
-%     str_idx2= sprintf('%02d',seq+1);
-%     path1 = [add_movie 'frame' str_idx1 '.png'];
-%     path2 = [add_movie 'frame' str_idx2 '.png'];
-%     pathGT = '';
-    path1 = [add subPath{seq}  '\frame10.png'];
-    path2 = [add subPath{seq}  '\frame11.png'];
-    pathGT = [add subPath{seq} '\flow10.flo'];
+    %     str_idx1 = sprintf('%02d',seq);
+    %     str_idx2= sprintf('%02d',seq+1);
+    %     path1 = [add_movie 'frame' str_idx1 '.png'];
+    %     path2 = [add_movie 'frame' str_idx2 '.png'];
+    %     pathGT = '';
+         path1 = [add subPath{seq}  '\frame10.png'];
+         path2 = [add subPath{seq}  '\frame11.png'];
+         pathGT = [add subPath{seq} '\flow10.flo'];
     [pyramid_images1c,pyramid_images2c,pyramid_levels,uvGT]=load_pyramidal_images_old(path1,path2,pathGT);
     %% Main algorithm
     median_filter_size = [5 5];
@@ -42,6 +42,7 @@ for seq=1:1
     w_size=[5,5,5,5,5];
     %w_size=[15,11,9,7,5];
     v_size=[5,5,5,5,5];
+    alpha_linear =  1;
     tic
     for lvl=pyramid_levels:-1:1
         %fprintf('Pyr lvl: %d \n',lvl)
@@ -124,28 +125,28 @@ for seq=1:1
                 
                 %end
                 %Propagation
-%                 if ((lvl ==1) && (k==12))
-%                     figure (4)
-%                     valueew = push_valuee(uvklt,w,tup,tvp,'');
-%                     plot(valueew,'b','LineWidth',2);
-%                     hold on
-%                     %Check_error of patches
-%                     error=[];
-%                     for i =1:H
-%                         for j=1:W
-%                             if Patches(i,j)
-%                                 error = [error; sqrt((uvklt(i,j,1)-tup(i,j))^2+(uvklt(i,j,2)-tvp(i,j))^2)];
-%                                 %w(i,j)
-%                             end
-%                         end
-%                     end
-%                     mean(error,'omitnan')
-% %                     imgflowcolor = uint8(flowToColor(uvklt));
-% %                     figure(5)
-% %                     imshow(imgflowcolor);
-% %                     set(gca,'units','normalized','position',[0 0 1 1]);
-% %                     print([subPath{seq} '_before'],'-depsc','-r0')
-%                 end
+                %                 if ((lvl ==1) && (k==12))
+                %                     figure (4)
+                %                     valueew = push_valuee(uvklt,w,tup,tvp,'');
+                %                     plot(valueew,'b','LineWidth',2);
+                %                     hold on
+                %                     %Check_error of patches
+                %                     error=[];
+                %                     for i =1:H
+                %                         for j=1:W
+                %                             if Patches(i,j)
+                %                                 error = [error; sqrt((uvklt(i,j,1)-tup(i,j))^2+(uvklt(i,j,2)-tvp(i,j))^2)];
+                %                                 %w(i,j)
+                %                             end
+                %                         end
+                %                     end
+                %                     mean(error,'omitnan')
+                % %                     imgflowcolor = uint8(flowToColor(uvklt));
+                % %                     figure(5)
+                % %                     imshow(imgflowcolor);
+                % %                     set(gca,'units','normalized','position',[0 0 1 1]);
+                % %                     print([subPath{seq} '_before'],'-depsc','-r0')
+                %                 end
                 [uvklt,w,~] = propagation_patch( uvklt,w,Patches,ind_p,pyr_image1c );
                 [uvklt,~] = propagation(uvklt,w,Patches,check_mat,pyr_image1c) ;
                 %[uvklt,~] = propagation_sort(uvklt,w,Patches,check_mat,pyr_image1c,index) ;
@@ -167,35 +168,35 @@ for seq=1:1
             
             uvklt(:,:,1) = medfilt2(uvklt(:,:,1), median_filter_size, 'symmetric');
             uvklt(:,:,2) = medfilt2(uvklt(:,:,2), median_filter_size, 'symmetric');
-%             if ((lvl ==1) && (k==12))
-%                 figure (4)
-%                 valueew = push_valuee(uvklt,w,tup,tvp,'');
-%                 plot(valueew,'r','LineWidth',2);
-%                 hold off
-%                 set(gca,'fontsize',20)
-%                 ylabel('AEPE') % y-axis label
-%                 xlabel('% of most reliable point') % y-axis label
-%                 %print(['pre_pos_pro_grid_eigRFmin_' subPath{seq}],'-depsc','-r0')
-%                 %print(['pre_pos_pro_grid_eigRFmin_' subPath{seq}],'-dpng','-r0')
-%                 %print(['C:\Users\MAI\Dropbox\Rapport\Optical_Flow\grid\pre_pos_pro_grid_varRFmin_' subPath{seq}],'-dpng','-r0');
-%                 %print(['C:\Users\MAI\Dropbox\Rapport\Optical_Flow\strategy\strategy_RFmin_' subPath{seq}],'-dpng','-r0');
-%                 % print(['C:\Obs\' 'KLT' int2str(ip(2)) int2str(ip(1)) ],'-dpng','-r0')
-%                 error=[];
-%                 for i =1:H
-%                     for j=1:W
-%                         if Patches(i,j)
-%                             error = [error; sqrt((uvklt(i,j,1)-tup(i,j))^2+(uvklt(i,j,2)-tvp(i,j))^2)];
-%                             %w(i,j)
-%                         end
-%                     end
-%                 end
-%                 mean(error,'omitnan')
-% %                 imgflowcolor = uint8(flowToColor(uvklt));
-% %                 figure(5)
-% %                 imshow(imgflowcolor);
-% %                 set(gca,'units','normalized','position',[0 0 1 1]);
-% %                 print([subPath{seq} '_after'],'-depsc','-r0')
-%             end
+            %             if ((lvl ==1) && (k==12))
+            %                 figure (4)
+            %                 valueew = push_valuee(uvklt,w,tup,tvp,'');
+            %                 plot(valueew,'r','LineWidth',2);
+            %                 hold off
+            %                 set(gca,'fontsize',20)
+            %                 ylabel('AEPE') % y-axis label
+            %                 xlabel('% of most reliable point') % y-axis label
+            %                 %print(['pre_pos_pro_grid_eigRFmin_' subPath{seq}],'-depsc','-r0')
+            %                 %print(['pre_pos_pro_grid_eigRFmin_' subPath{seq}],'-dpng','-r0')
+            %                 %print(['C:\Users\MAI\Dropbox\Rapport\Optical_Flow\grid\pre_pos_pro_grid_varRFmin_' subPath{seq}],'-dpng','-r0');
+            %                 %print(['C:\Users\MAI\Dropbox\Rapport\Optical_Flow\strategy\strategy_RFmin_' subPath{seq}],'-dpng','-r0');
+            %                 % print(['C:\Obs\' 'KLT' int2str(ip(2)) int2str(ip(1)) ],'-dpng','-r0')
+            %                 error=[];
+            %                 for i =1:H
+            %                     for j=1:W
+            %                         if Patches(i,j)
+            %                             error = [error; sqrt((uvklt(i,j,1)-tup(i,j))^2+(uvklt(i,j,2)-tvp(i,j))^2)];
+            %                             %w(i,j)
+            %                         end
+            %                     end
+            %                 end
+            %                 mean(error,'omitnan')
+            % %                 imgflowcolor = uint8(flowToColor(uvklt));
+            % %                 figure(5)
+            % %                 imshow(imgflowcolor);
+            % %                 set(gca,'units','normalized','position',[0 0 1 1]);
+            % %                 print([subPath{seq} '_after'],'-depsc','-r0')
+            %             end
             
             
             %             minu =min(min(min(uvklt(:,:,1))),min(tup(:)));
@@ -258,10 +259,11 @@ for seq=1:1
             axis([1 W 1 H minv maxv]);
         end
         
+        
+        
     end
     toc
-    
-
+    [uvklt2,w]= func_RFR_Patches(pyramid_images1c{1},pyramid_images2c{1},uvklt);
     %     error_size = sum(Patches(:));
     %     error  = zeros(error_size,1);
     %     count =1;
@@ -277,6 +279,7 @@ for seq=1:1
     %Display the final results
     imgflowcolor = uint8(flowToColor(uvklt));
     imgflowcolorP = uint8(flowToColor(uvklt.*repmat(Patches,[1,1,2])));
+    imgflowcolor2 = uint8(flowToColor(uvklt2));
     
     if gt
         [aae stdae aepe] = flowAngErr(uvGT(:,:,1),uvGT(:,:,2), uvklt(:,:,1), uvklt(:,:,2), 0); % ignore 0 boundary pixels
@@ -290,10 +293,10 @@ for seq=1:1
     end
     
     figure(6)
-    imshow(imgflowcolorP);
+    imshow(imgflowcolor2);
     figure(5)
     imshow(imgflowcolor);
-    save(['C:\Users\MAI\Dropbox\Database\optical flow\Dumptruck\' str_idx1 '_uvklt.mat'],'uvklt','w');    
+    %save(['C:\Users\MAI\Dropbox\Database\optical flow\Dumptruck\' str_idx1 '_uvklt.mat'],'uvklt','w');
     %print(['C:\Users\MAI\Dropbox\Rapport\Optical_Flow\RF\' subPath{seq} '_n8np50'],'-dpng','-r0');
     %print(['D:\Dropbox\Rapport\Optical_Flow\RF\' subPath{seq} '_n8np50'],'-dpng','-r0');
     %print(['C:\Users\Khoa\Dropbox\Database\RF7\' subPath{seq} '_rf7b'],'-dpng','-r0')
@@ -301,6 +304,6 @@ for seq=1:1
     %print(['C:\New\RF\submit\' subPath{seq} '_res'],'-dpng','-r0')
     %save(['C:\New\RF\submit\' subPath{seq} '_analyze.mat'],'uvklt','w','tu','tv')
     %save(['C:\New\RF\submit\' subPath{seq} '_submit.mat'],'uvklt')
-
+    
     %save(['C:\Users\Khoa\Dropbox\Database\RF7\' subPath{seq} 'uvklt_rf7b.mat'],'uvklt')
 end
