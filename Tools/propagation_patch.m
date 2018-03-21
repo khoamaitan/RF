@@ -24,7 +24,7 @@ for i =2:floor(n_point*1)
         small_patch = Patches(lim_u:lim_d,lim_l:lim_r);
         total_points = sum(small_patch(:));
     end
-    total_points=total_points-1;
+    %total_points=total_points-1;
     mat_simi = zeros(total_points,1);
     mat_w =zeros(total_points,1);
     mat_u=zeros(total_points,1);
@@ -48,7 +48,7 @@ for i =2:floor(n_point*1)
         if(sum(sum_simi(:) == 0))
             sum_simi=repmat(1/total_points,1,total_points);
         end
-        new_w = (mat_w'*mat_simi)/sum_simi;
+        new_w = (mat_w'*mat_simi)/sum_simi;%new weight calculated by similarity and neighbor weight
        if(new_w >= w(row,col))
             uvklt(row,col,1)=(mat_u'*mat_simi)/sum_simi;
             uvklt(row,col,2)=(mat_v'*mat_simi)/sum_simi;

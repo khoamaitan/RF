@@ -46,12 +46,12 @@ switch cas
                             end
                         end
                     sum_simi = sum(mat_simi);
-                    w_inf = mat_simi.*mat_w;
+                    w_inf = mat_simi.*mat_w; % similarity is weighted with neighbor weight
                     if(sum(w_inf(:)) == 0)
                         w_inf=repmat(1/total_points,total_points,1);
                     end    
-                    sum_w_inf = sum(w_inf);
-                    new_w = (mat_w'*mat_simi)/sum_simi;
+                    sum_w_inf = sum(w_inf); 
+                    new_w = (mat_w'*mat_simi)/sum_simi; %new weight calculated by similarity and neighbor weight
                         if(new_w >= w(i,j))
                             uvklt(i,j,1)=(mat_u'*w_inf)/sum_w_inf;
                             uvklt(i,j,2)=(mat_v'*w_inf)/sum_w_inf;

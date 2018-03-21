@@ -11,7 +11,7 @@ add3='C:\Users\khoa\Dropbox\Database\eval-data\';
 add_movie='C:\Users\MAI\Dropbox\Database\optical flow\Dumptruck\';
 addKITTI='C:\Users\MAI\Documents\KITI Flow\training\image_2\';
 add='C:\Users\MAI\Dropbox\Database\other-data\GT\';
-add='D:\Dropbox\Database\other-data\GT\';
+%add='D:\Dropbox\Database\other-data\GT\';
 subPath = {'Venus', 'Dimetrodon',   'Hydrangea',    'RubberWhale',...
     'Grove2', 'Grove3', 'Urban2', 'Urban3'};
 %  subPath = {'Army', 'Backyard',   'Basketball',    'Dumptruck',...
@@ -19,14 +19,15 @@ subPath = {'Venus', 'Dimetrodon',   'Hydrangea',    'RubberWhale',...
 %% Parameters to run script
 gt=1; % Load ground truth
 %save = 0; % Save image to file
-for seq=1:1
+for seq=1:8
     %% Loading images, groundtruth and convert to double
-    %subPath{seq}
+    
 %     str_idx1 = sprintf('%02d',seq);
 %     str_idx2= sprintf('%02d',seq+1);
 %     path1 = [add_movie 'frame' str_idx1 '.png'];
 %     path2 = [add_movie 'frame' str_idx2 '.png'];
 %     pathGT = '';
+    subPath{seq}
     path1 = [add subPath{seq}  '\frame10.png'];
     path2 = [add subPath{seq}  '\frame11.png'];
     pathGT = [add subPath{seq} '\flow10.flo'];
@@ -47,8 +48,12 @@ for seq=1:1
         %fprintf('Pyr lvl: %d \n',lvl)
         %pyr_image1 = pyramid_images1{lvl};
         %pyr_image2 = pyramid_images2{lvl};
-        pyr_image1c = pyramid_images1c{lvl};
-        pyr_image2c = pyramid_images2c{lvl};
+         pyr_image1c = pyramid_images1c{lvl};
+         pyr_image2c = pyramid_images2c{lvl};
+         pyr_image1g = rgb2gray(pyr_image1c/255)*255;
+         pyr_image2g = rgb2gray(pyr_image2c/255)*255;
+%        pyr_image1g = normalize_image(pyr_image1c);
+ %       pyr_image2g = normalize_image(pyr_image2c);
         H   = size(pyr_image1c, 1);
         W   = size(pyr_image1c, 2);
         [x,y]   = meshgrid(1:W,1:H);
@@ -113,8 +118,10 @@ for seq=1:1
                 %w = conv_eig;
                 w(iD)=0;
                 w(B)=0;
+                
                 maxval = max(w(:));
                 w = w*100./maxval;
+                w= max(w,0.1);
                 % if(sum(Patches(:))) %Remove and add patches
                 %     [Patches,check_mat]=Re_evaluate_patches(uvklt_old,uvklt,Patches,w);
                 % else %Create patches
@@ -293,7 +300,7 @@ for seq=1:1
     imshow(imgflowcolorP);
     figure(5)
     imshow(imgflowcolor);
-    save(['C:\Users\MAI\Dropbox\Database\optical flow\Dumptruck\' str_idx1 '_uvklt.mat'],'uvklt','w');    
+   % save(['C:\Users\MAI\Dropbox\Database\optical flow\Dumptruck\' str_idx1 '_uvklt.mat'],'uvklt','w');    
     %print(['C:\Users\MAI\Dropbox\Rapport\Optical_Flow\RF\' subPath{seq} '_n8np50'],'-dpng','-r0');
     %print(['D:\Dropbox\Rapport\Optical_Flow\RF\' subPath{seq} '_n8np50'],'-dpng','-r0');
     %print(['C:\Users\Khoa\Dropbox\Database\RF7\' subPath{seq} '_rf7b'],'-dpng','-r0')

@@ -10,8 +10,8 @@ H= size(w,1); W = size(w,2);
 
 check_mat = zeros(H,W);
 h_wsize = (w_size-1)/2;
-step_W = min(5,floor(W/10));
-step_H = min(10,floor(H/10));
+step_W = 5;
+step_H = 5;
 count_patch =0;
 Patches=zeros(H,W);
 ind_p=[];
